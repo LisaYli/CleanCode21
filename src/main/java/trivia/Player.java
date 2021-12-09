@@ -22,7 +22,3 @@ public class Player {
         }
     }
 }
-/*
-        place += roll;
-        place %= 12;
- */
