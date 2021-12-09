@@ -33,6 +33,7 @@ public class Game implements IGame {
 
     public boolean add(String playerName) {
         players.add(new Player(playerName));
+
         inPenaltyBox[howManyPlayers()] = false;
 
         System.out.println(playerName + " was added");
@@ -68,7 +69,7 @@ public class Game implements IGame {
         } else {
             movePlayer(roll);
 
-            System.out.println(players.get(currentPlayer).name()
+            System.out.println(currentPlayer().name()
                     + "'s new location is "
                     + currentPlayer().place());
             System.out.println("The category is " + currentCategory());
@@ -118,9 +119,10 @@ public class Game implements IGame {
             if (isGettingOutOfPenaltyBox) {
                 System.out.println("Answer was correct!!!!");
                 purses[currentPlayer]++;
-                System.out.println(players.get(currentPlayer).name()
+                currentPlayer().addCoin();
+                System.out.println(currentPlayer().name()
                         + " now has "
-                        + purses[currentPlayer]
+                        + currentPlayer().coins()
                         + " Gold Coins.");
 
                 boolean winner = didPlayerWin();
@@ -137,7 +139,8 @@ public class Game implements IGame {
         } else {
             System.out.println("Answer was corrent!!!!");
             purses[currentPlayer]++;
-            System.out.println(players.get(currentPlayer).name()
+            currentPlayer().addCoin();
+            System.out.println(currentPlayer().name()
                     + " now has "
                     + purses[currentPlayer]
                     + " Gold Coins.");
