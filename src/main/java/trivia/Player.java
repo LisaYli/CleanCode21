@@ -4,8 +4,9 @@ public class Player {
     private final String name;
     private int place = 0;
     private int coins = 0;
+    private boolean inPenaltyBox = false;
 
-    Player(String name) {
+    public Player(String name) {
         this.name = name;
     }
 
@@ -30,5 +31,13 @@ public class Player {
 
     public int coins() {
         return coins;
+    }
+
+    public void moveToPenaltyBox() {
+        inPenaltyBox = true;
+    }
+
+    public boolean isInPenaltyBox() {
+        return inPenaltyBox;
     }
 }
