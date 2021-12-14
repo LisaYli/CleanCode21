@@ -1,9 +1,5 @@
 package yatzy;
 
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toSet;
-
 public class Yatzy {
 
     public static int chance(DiceHand diceHand) {
@@ -11,57 +7,24 @@ public class Yatzy {
     }
 
     public static int yatzy(DiceHand dice) {
-        // if (dice.stream().allMatch(n -> n.equals(dice.die(6)))){
-        // if (dice.stream().collect(toSet().size() == 1)){
+        // if (dice.stream().allMatch(n -> n.equals(dice.die(6))))
+        // if (dice.stream().collect(toSet().size() == 1))
         if (dice.stream().distinct().count() == 1) {
             return 50;
         }
         return 0;
     }
 
-
-    public static int ones(int d1, int d2, int d3, int d4, int d5) {
-        int sum = 0;
-        if (d1 == 1) sum++;
-        if (d2 == 1) sum++;
-        if (d3 == 1) sum++;
-        if (d4 == 1) sum++;
-        if (d5 == 1)
-            sum++;
-
-        return sum;
+    public static int ones(DiceHand diceHand) {
+        return sumValues(diceHand,1);
     }
 
-    public static int twos(int d1, int d2, int d3, int d4, int d5) {
-        int sum = 0;
-        if (d1 == 2) sum += 2;
-        if (d2 == 2) sum += 2;
-        if (d3 == 2) sum += 2;
-        if (d4 == 2) sum += 2;
-        if (d5 == 2) sum += 2;
-        return sum;
+    public static int twos(DiceHand diceHand) {
+        return sumValues(diceHand,2);
     }
 
-    public static int threes(int d1, int d2, int d3, int d4, int d5) {
-        int s;
-        s = 0;
-        if (d1 == 3) s += 3;
-        if (d2 == 3) s += 3;
-        if (d3 == 3) s += 3;
-        if (d4 == 3) s += 3;
-        if (d5 == 3) s += 3;
-        return s;
-    }
-
-    protected int[] dice;
-
-    public Yatzy(int d1, int d2, int d3, int d4, int _5) {
-        dice = new int[5];
-        dice[0] = d1;
-        dice[1] = d2;
-        dice[2] = d3;
-        dice[3] = d4;
-        dice[4] = _5;
+    public static int threes(DiceHand diceHand) {
+        return sumValues(diceHand,3);
     }
 
     public int fours() {
@@ -91,6 +54,28 @@ public class Yatzy {
                 sum = sum + 6;
         return sum;
     }
+
+    private static int sumValues(DiceHand diceHand, int value) {
+        return diceHand.stream()
+                .filter(n -> n == value)
+                .mapToInt(Integer::intValue)
+                .sum();
+    }
+
+
+
+    protected int[] dice;
+
+    public Yatzy(int d1, int d2, int d3, int d4, int _5) {
+        dice = new int[5];
+        dice[0] = d1;
+        dice[1] = d2;
+        dice[2] = d3;
+        dice[3] = d4;
+        dice[4] = _5;
+    }
+
+
 
     public static int score_pair(int d1, int d2, int d3, int d4, int d5) {
         int[] counts = new int[6];
