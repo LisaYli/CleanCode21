@@ -1,4 +1,4 @@
-package tdd;
+package tdd.fizzbuzz;
 
 
 public class FizzBuzz {
@@ -7,9 +7,9 @@ public class FizzBuzz {
         var divisibleBy5 = isDivisibleBy5(number);
         if (divisibleBy3 && divisibleBy5) {
             return "fizz buzz";
-        }else if (number % 3 == 0) {
+        }else if (isDivisibleBy3(number)) {
             return "fizz";
-        } else if (number % 5 == 0) {
+        } else if (isDivisibleBy5(number)) {
             return "buzz";
         }
         return String.valueOf(number);

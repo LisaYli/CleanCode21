@@ -1,5 +1,6 @@
-package tdd;
+package tdd.fizzbuzz;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,7 +13,7 @@ public class FizzBuzzTest {
     @Test
     @DisplayName("Hello Al lThis Very Silly Test Ok")
     void testThatMethodCallReturnsOne () {
-        assertEquals("1", FizzBuzz.fizzBuzz(1));
+        Assertions.assertEquals("1", FizzBuzz.fizzBuzz(1));
     }
 
     @Test
