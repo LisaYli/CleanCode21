@@ -1,17 +1,16 @@
 package tdd.fizzbuzz;
 
-
 public class FizzBuzz {
     public static String fizzBuzz(int number) {
-        var divisibleBy3 = isDivisibleBy3(number);
-        var divisibleBy5 = isDivisibleBy5(number);
-        if (divisibleBy3 && divisibleBy5) {
-            return "fizz buzz";
-        }else if (isDivisibleBy3(number)) {
-            return "fizz";
-        } else if (isDivisibleBy5(number)) {
-            return "buzz";
+        String answer = "";
+        if (isDivisibleBy3(number)) {
+            answer += "fizz";
         }
+        if (isDivisibleBy5(number)) {
+            answer += "buzz";
+        }
+        if (!answer.isEmpty())
+            return answer;
         return String.valueOf(number);
     }
 

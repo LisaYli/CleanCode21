@@ -46,7 +46,7 @@ public class FizzBuzzTest {
     @Test
     @DisplayName("Given number divisible by 5 and3 returns buzz")
     void testThatMethodCallReturnsFizzBuzz () {
-        assertEquals("fizz buzz", FizzBuzz.fizzBuzz(15));
+        assertEquals("fizzbuzz", FizzBuzz.fizzBuzz(15));
     }
 
 
