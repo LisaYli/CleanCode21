@@ -1,13 +1,22 @@
 package tdd.bowling;
 
 public class Game {
-    int totalScore = 0;
+    public static final int ALL_PINS = 10;
     private final int[] rolls = new int[21];
     private int currentRoll = 0;
 
     public void roll(int pinsKnockedDown) {
-        totalScore += pinsKnockedDown;
-        rolls[currentRoll++] = pinsKnockedDown;
+
+        if(isFirstRollInFrame() && pinsKnockedDown == ALL_PINS){
+            rolls[currentRoll++] = pinsKnockedDown;
+            currentRoll++;
+        }
+        else
+            rolls[currentRoll++] = pinsKnockedDown;
+    }
+
+    private boolean isFirstRollInFrame() {
+        return currentRoll % 2 == 0;
     }
 
     public int score() {
@@ -20,7 +29,9 @@ public class Game {
     }
 
     private int calculateBonus(int frame) {
-        if (isSpare(frame))
+        if(isStrike(frame))
+            return rolls[frame + 2] + rolls[frame + 3];
+        else if (isSpare(frame))
             return rolls[frame + 2];
 
         return 0;
@@ -28,8 +39,12 @@ public class Game {
 
     }
 
+    private boolean isStrike(int frame) {
+        return frame % 2 == 0 && rolls[frame] == ALL_PINS;
+    }
+
     private boolean isSpare(int frame) {
-        return frame % 2 == 0 && rolls[frame] + rolls[frame + 1] == 10;
+        return frame % 2 == 0 && rolls[frame] + rolls[frame + 1] == ALL_PINS;
     }
 
 }
