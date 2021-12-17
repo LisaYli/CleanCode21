@@ -1,44 +1,56 @@
 package tdd.bowling;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import tdd.fizzbuzz.FizzBuzz;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameTest {
+    private final Game game;
+
+    public GameTest() {
+        game = new Game();
+    }
 
     @Test
     void rolling20TimesWithNoPinsKnockedDownShouldReturnScoreZero() {
-        Game game = new Game();
-
-        for (int i = 0; i < 20; i++) {
-            game.roll(0);
-        }
+        multipleRoll(20,0);
         assertEquals(0, game.score());
     }
 
-
-
     @Test
     void rolling20TimesWithOnePinsKnockedDownShouldReturnScore20() {
-        Game game = new Game();
-
-        for (int i = 0; i<20; i++){
-            game.roll(1);
-        }
-        assertEquals(20,game.score());
+        multipleRoll(20,1);
+        assertEquals(20, game.score());
     }
-    /*@ParameterizedTest
-    @ValueSource(ints = {3,6})
-    @DisplayName("Given number divisible by 3 returns fizz")
-    void testThatMethodCallReturnsFizz (int number) {
-        assertEquals("fizz", FizzBuzz.fizzBuzz(number));
-        }
 
-     */
+    @Test
+    void spareTest() {
+        game.roll(5);
+        game.roll(5);
+        game.roll(2);
+        multipleRoll(17,0);
+
+        assertEquals(14,game.score());
+
+    }
+
+    @Test
+    void spareInLastRoundTest() {
+     multipleRoll(18,0);
+        game.roll(5);
+        game.roll(5);
+        game.roll(2);
+
+        assertEquals(12,game.score());
+
+    }
+
+
+    private void multipleRoll(int n,int pins) {
+        for (int i = 0; i < n; i++) {
+            game.roll(pins);
+        }
+    }
 
 }
 
