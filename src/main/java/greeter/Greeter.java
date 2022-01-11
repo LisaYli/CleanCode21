@@ -10,9 +10,13 @@ private final TimeProvider timeProvider;
     }
 
     public String greet() {
-        if (timeProvider.currentTime().getHour() < 12)
+        var timeCheck = timeProvider.currentTime().getHour();
+        if (timeCheck < 12)
             return "God morgon.";
+        else if (timeCheck >= 18)
+            return "God kväll.";
         else
             return "God dag.";
+
     }
 }

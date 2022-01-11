@@ -11,7 +11,6 @@ public class GreeterTest {
 
     Greeter greeter;
     TimeProvider timeProvider;
-
     @Test
     void givenATimeBefore12ReturnGodMorgon() {
         timeProvider = new BeforeNoon();
@@ -26,6 +25,15 @@ public class GreeterTest {
         Mockito.when(timeProvider.currentTime()).thenReturn(LocalTime.of(12,30));
         greeter = new Greeter(timeProvider);
         assertThat(greeter.greet()).isEqualTo("God dag.");
+    }
+
+
+    @Test
+    void givenATimeAfter18ReturnGodKvall() {
+        timeProvider = Mockito.mock(TimeProvider.class);
+        Mockito.when(timeProvider.currentTime()).thenReturn(LocalTime.of(18,30));
+        greeter = new Greeter(timeProvider);
+        assertThat(greeter.greet()).isEqualTo("God kväll.");
     }
 
 
