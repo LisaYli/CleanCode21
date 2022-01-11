@@ -1,131 +1,70 @@
 package trivia;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+
 public class Game implements IGame {
-    ArrayList<String> players = new ArrayList<>();
-    int[] places = new int[6];
-    int[] purses = new int[6];
-    boolean[] inPenaltyBox = new boolean[6];
+    private final List<Player> players = new ArrayList<>();
 
-    List<String> popQuestions = new LinkedList<>();
-    List<String> scienceQuestions = new LinkedList<>();
-    List<String> sportsQuestions = new LinkedList<>();
-    List<String> rockQuestions = new LinkedList<>();
+    private int currentPlayer = 0;
+    private boolean isGettingOutOfPenaltyBox;
+    private final Question questions = new Question();
 
-    int currentPlayer = 0;
-    boolean isGettingOutOfPenaltyBox;
+    public Game() {}
 
-    public Game() {
-        for (int i = 0; i < 50; i++) {
-            popQuestions.add("Pop Question " + i);
-            scienceQuestions.add(("Science Question " + i));
-            sportsQuestions.add(("Sports Question " + i));
-            rockQuestions.add(createRockQuestion(i));
-        }
-    }
-
-    public String createRockQuestion(int index) {
-        return "Rock Question " + index;
-    }
-
-    public boolean isPlayable() {
-        return (howManyPlayers() >= 2);
-    }
-
-    public boolean add(String playerName) {
-        players.add(playerName);
-        places[howManyPlayers()] = 0;
-        purses[howManyPlayers()] = 0;
-        inPenaltyBox[howManyPlayers()] = false;
-
+    public void add(String playerName) {
+        players.add(new Player(playerName));
         System.out.println(playerName + " was added");
         System.out.println("They are player number " + players.size());
-        return true;
-    }
-
-
-    public int howManyPlayers() {
-        return players.size();
     }
 
     public void roll(int roll) {
-        System.out.println(players.get(currentPlayer) + " is the current player");
+        System.out.println(currentPlayer().name() + " is the current player");
         System.out.println("They have rolled a " + roll);
 
-        if (inPenaltyBox[currentPlayer]) {
+        if (currentPlayer().isInPenaltyBox()) {
             if (roll % 2 != 0) {
                 isGettingOutOfPenaltyBox = true;
 
-                System.out.println(players.get(currentPlayer) + " is getting out of the penalty box");
-                places[currentPlayer] = places[currentPlayer] + roll;
-                if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
-
-                System.out.println(players.get(currentPlayer)
-                        + "'s new location is "
-                        + places[currentPlayer]);
-                System.out.println("The category is " + currentCategory());
+                System.out.println(currentPlayer().name() + " is getting out of the penalty box");
+                currentPlayer().move(roll);
+                System.out.println(currentPlayer().name() + "'s new location is " + currentPlayer().place());
+                System.out.println("The category is " + questions.currentCategory(currentPlayer().place()).getLabel());
                 askQuestion();
             } else {
-                System.out.println(players.get(currentPlayer) + " is not getting out of the penalty box");
+                System.out.println(currentPlayer().name() + " is not getting out of the penalty box");
                 isGettingOutOfPenaltyBox = false;
             }
 
         } else {
+            currentPlayer().move(roll);
 
-            places[currentPlayer] = places[currentPlayer] + roll;
-            if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
-
-            System.out.println(players.get(currentPlayer)
-                    + "'s new location is "
-                    + places[currentPlayer]);
-            System.out.println("The category is " + currentCategory());
+            System.out.println(currentPlayer().name() + "'s new location is " + currentPlayer().place());
+            System.out.println("The category is " + questions.currentCategory(currentPlayer().place()).getLabel());
             askQuestion();
         }
 
     }
 
     private void askQuestion() {
-        String question = extractNextQuestion();
-        System.out.println(question);
-    }
-
-    private String extractNextQuestion() {
-        return switch (currentCategory()) {
-            case "Pop" -> popQuestions.remove(0);
-            case "Science" -> scienceQuestions.remove(0);
-            case "Sports" -> sportsQuestions.remove(0);
-            case "Rock" -> rockQuestions.remove(0);
-            default -> throw new IllegalStateException("Unexpected value: " + currentCategory());
-        };
+        System.out.println(questions.extractNextQuestion(currentPlayer().place()));
     }
 
 
-    private String currentCategory() {
-        if (places[currentPlayer] == 0) return "Pop";
-        if (places[currentPlayer] == 4) return "Pop";
-        if (places[currentPlayer] == 8) return "Pop";
-        if (places[currentPlayer] == 1) return "Science";
-        if (places[currentPlayer] == 5) return "Science";
-        if (places[currentPlayer] == 9) return "Science";
-        if (places[currentPlayer] == 2) return "Sports";
-        if (places[currentPlayer] == 6) return "Sports";
-        if (places[currentPlayer] == 10) return "Sports";
-        return "Rock";
+    private Player currentPlayer() {
+        return players.get(currentPlayer);
     }
 
     public boolean wasCorrectlyAnswered() {
-        if (inPenaltyBox[currentPlayer]) {
+
+        if (currentPlayer().isInPenaltyBox()) {
             if (isGettingOutOfPenaltyBox) {
                 System.out.println("Answer was correct!!!!");
-                purses[currentPlayer]++;
-                System.out.println(players.get(currentPlayer)
-                        + " now has "
-                        + purses[currentPlayer]
-                        + " Gold Coins.");
-
+                // TODO possible bug: shouldn't you exit the penalty box here ?
+                //  email the biz: in case he's about to exit from pen box and correct answer
+                currentPlayer().addCoin();
+                System.out.println(currentPlayer().name() + " now has " + currentPlayer().coins() + " Gold Coins.");
                 boolean winner = didPlayerWin();
                 currentPlayer++;
                 if (currentPlayer == players.size()) currentPlayer = 0;
@@ -137,14 +76,12 @@ public class Game implements IGame {
                 return true;
             }
 
-
         } else {
-
             System.out.println("Answer was corrent!!!!");
-            purses[currentPlayer]++;
-            System.out.println(players.get(currentPlayer)
+            currentPlayer().addCoin();
+            System.out.println(currentPlayer().name()
                     + " now has "
-                    + purses[currentPlayer]
+                    + currentPlayer().coins()
                     + " Gold Coins.");
 
             boolean winner = didPlayerWin();
@@ -157,8 +94,8 @@ public class Game implements IGame {
 
     public boolean wrongAnswer() {
         System.out.println("Question was incorrectly answered");
-        System.out.println(players.get(currentPlayer) + " was sent to the penalty box");
-        inPenaltyBox[currentPlayer] = true;
+        System.out.println(currentPlayer().name() + " was sent to the penalty box");
+        currentPlayer().moveToPenaltyBox();
 
         currentPlayer++;
         if (currentPlayer == players.size()) currentPlayer = 0;
@@ -167,6 +104,18 @@ public class Game implements IGame {
 
 
     private boolean didPlayerWin() {
-        return !(purses[currentPlayer] == 6);
+        return !(currentPlayer().coins() == 6);
     }
 }
+/*
+ * extracted method (replace duplicate code)
+ * Inline
+ * renamed
+ * baby steps: don't break compilation at any moment while refactoring
+ * Move Method --> Player.move(roll) -- with invariants
+ * switch [expression]: 1) one lines/case, 2) default 3) no extra code in that method
+ * Alt-J
+ * Any field ypu create let it be private final at the start. NOT creating getters and setters.
+   If you need to create them, create them individually.
+ * records - immutable structs
+ */
